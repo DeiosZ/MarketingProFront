@@ -1,31 +1,46 @@
-// Servicio de envío de formularios
-const FORM_SUBMIT_URL = 'https://formsubmit.co/ajax/v.angelnetwork615@gmail.com';
+// Servicio de envío de formularios 
+export const sendContactForm = (formData) => {
+  return new Promise((resolve) => {
+   
+    const iframe = document.createElement('iframe');
+    iframe.name = 'hidden_iframe';
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+    
 
-export const sendContactForm = async (formData) => {
-  try {
-    const response = await fetch(FORM_SUBMIT_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-        name: formData.name,
-        email: formData.email,
-        message: formData.message,
-        _subject: 'Nuevo contacto desde MarketingPro',
-        _template: 'table',
-        _captcha: 'false'
-      })
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = 'https://formsubmit.co/v.angelnetwork615@gmail.com'; // ← Sin /ajax/
+    form.target = 'hidden_iframe';
+    
+
+    const formFields = {
+      name: formData.name,
+      email: formData.email,
+      message: formData.message,
+      _subject: 'Nuevo contacto desde MarketingPro',
+      _template: 'table',
+      _captcha: 'false'
+    };
+    
+    // Crear inputs ocultos
+    Object.keys(formFields).forEach(key => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = formFields[key];
+      form.appendChild(input);
     });
+    
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+    
 
-    return { success: true, data: await response.json() };
-  } catch (error) {
-    console.error('Error en formService:', error);
-    return { success: false, error: error.message };
-  }
+    setTimeout(() => {
+      document.body.removeChild(iframe);
+      resolve({ success: true });
+    }, 2000);
+  });
 };
