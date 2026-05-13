@@ -1,4 +1,4 @@
-
+// Servicio de envío de formularios
 const FORM_SUBMIT_URL = 'https://formsubmit.co/ajax/v.angelnetwork615@gmail.com';
 
 export const sendContactForm = async (formData) => {
